@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 # 自定义后台中间件类
 from django.shortcuts import render
 from django.shortcuts import redirect

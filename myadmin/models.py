@@ -1,6 +1,5 @@
 from django.db import models
 
-#用户信息模型
 class Users(models.Model):
     username = models.CharField(max_length=32)
     name = models.CharField(max_length=16)
@@ -14,20 +13,18 @@ class Users(models.Model):
     addtime = models.IntegerField()
 
     class Meta:
-        db_table = "myweb_users"  # 更改表名
+        db_table = "myweb_users"  
 
 
-# 商品类别信息模型
 class Types(models.Model):
     name = models.CharField(max_length=32)
     pid = models.IntegerField(default=0)
     path = models.CharField(max_length=255)
 
     class Meta:
-        db_table = "myweb_type"  # 更改表名
+        db_table = "myweb_type"  
 
 
-# 商品信息模型
 class Goods(models.Model):
     typeid = models.IntegerField()
     goods = models.CharField(max_length=32)
