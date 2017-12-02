@@ -65,7 +65,7 @@ def registerzc(request):
             # 获取密码并md5
             import hashlib
             m = hashlib.md5()
-            m.update(bytes(request.POST['password'], encoding="utf8"))
+            m.update(bytes(request.POST['password']))
             ob.password = m.hexdigest()
             ob.phone = request.POST['phone']
             ob.email = request.POST['email']
@@ -89,7 +89,7 @@ def logindl(request):
         user = Users.objects.get(phone=request.POST['phone'])
         # 根据账号获取登陆着信息
         m = hashlib.md5()
-        m.update(bytes(request.POST['password'], encoding="utf-8"))
+        m.update(bytes(request.POST['password']))
         if user.password == m.hexdigest():
             # 若此处登陆成功，将 当前登陆信息放到session中，并跳转页面
             request.session['username'] = user.username
@@ -290,6 +290,7 @@ def myorder(request):
     context = loadinfo()
     # 从session中获取登陆者的id号,并且从订单表orders中获取当前用户的所用订单
     orders = Orders.objects.filter(uid=request.session['uid'])
+    dlist = []
     # 遍历当前用户的所有订单属性,并获得对应的订单详情信息
     for order in orders:
         dlist = Detail.objects.filter(orderid=order.id)
