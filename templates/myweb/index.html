@@ -86,7 +86,7 @@
           </a>
         </div>
         <div class="item">
-            <a href="./list.html">
+            <a href="{% url 'list' %}">
                 <span style="background-image: url({% static 'myweb/img/app/mi04.png' %});" class="icon"></span>
                 <span class="name">分类</span>
             </a>
@@ -124,7 +124,7 @@
     <!-- 头部 侧导航 -->
     <ul class="home-category hidden-xs hidden-sm" id="homeCategory">
         <li class="home-category-item">
-          <a href="./list.html" class="home-category-link">
+          <a href="{% url 'list' %}" class="home-category-link">
               手机
           </a>
           <div class="home-category-child clearfix">

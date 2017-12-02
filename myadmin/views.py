@@ -55,7 +55,7 @@ def usersinsert(request):
         # 获取密码并md5
         import hashlib
         m = hashlib.md5()
-        m.update(bytes(request.POST['password'],encoding="utf8"))
+        m.update(bytes(request.POST['password']))
         ob.password = m.hexdigest()
         ob.sex = request.POST['sex']
         ob.address = request.POST['address']
@@ -121,11 +121,11 @@ def login(request):
 # 会员执行登录
 def dologin(request):
     # 校验验证码
-    verifycode = request.session['verifycode']
-    code = request.POST['code'].lower()
-    if verifycode != code:
-        context = {'info':'验证码错误！'}
-        return render(request,"myadmin/login.html",context)
+    # verifycode = request.session['verifycode']
+    # code = request.POST['code'].lower()
+    # if verifycode != code:
+    #    context = {'info':'验证码错误！'}
+    #    return render(request,"myadmin/login.html",context)
 
     try:
         # 根据账号获取登录者信息
@@ -135,7 +135,7 @@ def dologin(request):
             # 验证密码
             import hashlib
             m = hashlib.md5()
-            m.update(bytes(request.POST['password'], encoding="utf8"))
+            m.update(bytes(request.POST['password']))
             if user.password == m.hexdigest():
                 # 此处登录成功，将当前登录信息放入到session中，并跳转页面
                 request.session['adminuser'] = user.name

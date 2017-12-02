@@ -42,6 +42,7 @@ def typeinsert(request):
         ob.name = request.POST['name']
         ob.pid = request.POST['pid']
         ob.path = request.POST['path']
+
         ob.save()
         context = {'info':'添加成功！'}
     except:
