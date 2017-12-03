@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 from django.db import models
 
 
@@ -46,8 +47,39 @@ class Goods(models.Model):
         return {'id': self.id, 'goods': self.goods, 'picname': self.picname, 'price': self.price, 'num': self.num, 'descr': self.descr}
 
 
+class Cart(models.Model):
+    uid = models.IntegerField()
+    phone = models.CharField(max_length=16)
+    addtime = models.IntegerField()
+    price = models.IntegerField()
+    number = models.IntegerField()
+    total = models.FloatField()
+
+
+class Store(models.Model):
+    uid = models.IntegerField()
+    good_id = models.IntegerField()
+    addtime = models.IntegerField()
+    price = models.IntegerField()
+    number = models.IntegerField()
+
+# 发货清单
+class Dispatch(models.Model):
+    uid = models.IntegerField()
+    good_id = models.IntegerField()
+    store_id = models.IntegerField()
+    linkman = models.CharField(max_length=32)
+    phone = models.CharField(max_length=16)
+    address = models.CharField(max_length=255)
+    code = models.CharField(max_length=6)
+    addtime = models.IntegerField()
+    number = models.IntegerField()
+    status = models.IntegerField(default=0)
+
+
 class Orders(models.Model):
     uid = models.IntegerField()
+    goods = models.CharField(max_length=255)
     linkman = models.CharField(max_length=32)
     address = models.CharField(max_length=255)
     code = models.CharField(max_length=6)
@@ -55,7 +87,6 @@ class Orders(models.Model):
     addtime = models.IntegerField()
     total = models.FloatField()
     status = models.IntegerField(default=0)
-
 
 
 class Detail(models.Model):

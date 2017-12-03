@@ -68,6 +68,7 @@ class Migration(migrations.Migration):
             name='Orders',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('goods', models.CharField(max_length=255)),
                 ('uid', models.IntegerField()),
                 ('linkman', models.CharField(max_length=32)),
                 ('address', models.CharField(max_length=255)),
@@ -108,5 +109,51 @@ class Migration(migrations.Migration):
             options={
                 'db_table': 'myweb_users',
             },
+        ),
+        migrations.CreateModel(
+            name='Cart',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('uid', models.IntegerField()),
+                ('phone', models.CharField(max_length=16)),
+                ('addtime', models.IntegerField()),
+                ('price', models.IntegerField()),
+                ('number', models.IntegerField()),
+                ('total', models.FloatField()),
+            ],
+            options={
+                'db_table': 'myweb_cart',
+            },
+        ),
+        migrations.CreateModel(
+            name='Store',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('uid', models.IntegerField()),
+                ('good_id', models.IntegerField()),
+                ('addtime', models.IntegerField()),
+                ('price', models.IntegerField()),
+                ('number', models.IntegerField()),
+            ],
+        ),
+        migrations.AlterModelTable(
+            name='cart',
+            table=None,
+        ),
+        migrations.CreateModel(
+            name='Dispatch',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('uid', models.IntegerField()),
+                ('good_id', models.IntegerField()),
+                ('store_id', models.IntegerField()),
+                ('linkman', models.CharField(max_length=32)),
+                ('phone', models.CharField(max_length=16)),
+                ('address', models.CharField(max_length=255)),
+                ('code', models.CharField(max_length=6)),
+                ('addtime', models.IntegerField()),
+                ('number', models.IntegerField()),
+                ('status', models.IntegerField(default=0)),
+            ],
         ),
     ]

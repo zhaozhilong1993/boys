@@ -7,8 +7,9 @@ import random
 import hashlib
 import io
 import time
+import json
 
-from myweb.models import Types, Goods, Users, Orders, Detail, Carousel
+from myweb.models import Types, Goods, Users, Orders, Detail, Carousel, Store, Dispatch
 
 
 # 公共信息加载函数
@@ -239,8 +240,6 @@ def orderform(request):
 # 订单确认页
 def orderqr(request):
     request.session['order_username'] = request.POST['name']
-    request.session['user_address'] = request.POST['address']
-    request.session['user_code'] = request.POST['code']
     request.session['user_phone'] = request.POST['phone']
     return render(request, 'myweb/order_confirm.html')
 
@@ -253,9 +252,26 @@ def orderxd(request):
     ord.address = request.session['user_address']
     ord.code = request.session['user_code']
     ord.phone = request.session['user_phone']
+    # 记录购买的商品情况
+    ord.goods = json.dumps(request.session['orderlist'])
+
+    # 支付完成后
+    ord.status = 2
+
     ord.addtime = time.time()
     ord.total = request.session['total']
     ord.save()
+
+    # 添加库存 - 新增
+    goods_list = json.loads(ord.goods)
+    for good_id,good_info in goods_list.items():
+        store_room = Store()
+        store_room.uid = ord.uid
+        store_room.good_id = good_id
+        store_room.price = good_info['price']
+        store_room.number = good_info['shop_num']
+        store_room.addtime = time.time()
+        store_room.save()
 
     # 获取订单详情
     orderlist = request.session['orderlist']
@@ -339,3 +355,89 @@ def orderztxg(request, gid):
 #     context['orders'] = orders
 #     context['dlist'] = dlist
 #     return render(request, "myweb/order_n.html", context)
+
+# =========库存处理============
+# 库存页
+def store(request):
+    context = loadinfo()
+    # 从session中获取登陆者的id号,并且从库存表store中获取当前用户的信息
+    store_room = Store.objects.filter(uid=request.session['uid'])
+    dlist = []
+    for i in store_room:
+        good = Goods.objects.get(id=i.good_id)
+        dlist.append(
+            {
+                'price': i.price,
+                'number': i.number,
+                'name': good.goods,
+                'picname': good.picname,
+                'addtime': i.addtime,
+                'id': i.id
+            }
+        )
+    context['store_room'] = dlist
+    return render(request, "myweb/store.html", context)
+
+# 库存-发货信息
+def store_order(request):
+    context = loadinfo()
+    dispatch = Dispatch.objects.filter(uid=request.session['uid'])
+    dlist = []
+    for i in dispatch:
+        good = Goods.objects.get(id=i.good_id)
+        store_good = Store.objects.get(id=i.store_id)
+        dlist.append(
+            {
+                'price': store_good.price, # 入库价
+                'number': i.number, # 发货数量
+                'remain': store_good.number, # 剩余库存
+                'name': good.goods, # 商品名
+                'picname': good.picname, # 商品图片
+                'addtime': i.addtime, # 添加时间
+                'status': i.status, # 发货状态
+                'linkman': i.linkman, # 收货人
+                'total': i.number * store_good.price,
+                'id': i.id # 发货编号
+            }
+        )
+    context['dispatch_order'] = dlist
+    return render(request, 'myweb/store_order.html', context)
+
+# 库存-发货页
+def store_send(request):
+    request.session['send_store_good_id'] = request.POST['send_store_good_id']  # 添加购买数量
+    request.session['store_send_number'] = int(request.POST['send_number'])  # 添加购买数量
+    store_good = Store.objects.get(id=request.session['send_store_good_id'])
+    request.session['store_good_price'] = store_good.price
+
+    good = Goods.objects.get(id=store_good.good_id)
+    request.session['store_send_good_desc'] = good.descr
+    request.session['store_send_good_name'] = good.goods
+    return render(request, 'myweb/store_send.html')
+
+# 库存-发货表单
+def store_xd(request):
+
+    # 库存不足的判断还没写
+
+    store_good_id = request.session['send_store_good_id']
+    store_good_send_num = request.session['store_send_number']
+    store_good = Store.objects.get(id=store_good_id)
+    store_good.number = store_good.number - store_good_send_num
+
+    store_good.save()
+
+    dispatch = Dispatch()
+    dispatch.uid = store_good.uid
+    dispatch.good_id = store_good.good_id
+    dispatch.store_id = store_good.id
+    dispatch.linkman  = request.POST['linkman']
+    dispatch.phone = request.POST['phone']
+    dispatch.address = request.POST['address']
+    dispatch.code = request.POST['code']
+    dispatch.number = request.session['store_send_number']
+    dispatch.status = 0
+    dispatch.addtime = time.time()
+    dispatch.save()
+
+    return redirect(reverse('store_order'))

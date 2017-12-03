@@ -36,6 +36,12 @@ urlpatterns = [
     url(r'^orderxd$', views.orderxd, name='orderxd'),  # 确认下单
     url(r'^order$',  views.myorder, name='myorder'),  # 我的订单页
     url(r'orderxq$', views.orderxq, name='orderxq'),  # 订单详情
-    url(r'orderztxg/(?P<gid>[0-9]+)$', views.orderztxg, name='qt_ztxg')  # 状态修改
+    url(r'orderztxg/(?P<gid>[0-9]+)$', views.orderztxg, name='qt_ztxg'), # 状态修改
+
+    # ===========库存模块==================
+    url(r'^store$', views.store, name='store'),  # 库存
+    url(r'^storeorder$', views.store_order, name='store_order'),  # 发货信息
+    url(r'^storesend$', views.store_send, name='store_send'),  # 发货
+    url(r'^storexd$', views.store_xd, name='store_xd')  # 发货
 
 ]

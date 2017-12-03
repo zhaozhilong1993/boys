@@ -22,9 +22,11 @@
 				<!-- 左侧导航 -->
 				<div class="left-nav f-fl col-md-4 hidden-xs hidden-sm">
 					<div class="nav-main">
-						<a href="{% url 'myorder' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
+					<a href="{% url 'myorder' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
 						<a href="{% url 'myorder' %}" class="ml active" >我的订单</a>
-						<a href="#" class="ml " >我的回购单</a>
+						<a href="{% url 'store' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>个人库房</a>
+						<a href="{% url 'store' %}" class="ml" >我的库存</a>
+						<a href="#" class="ml " >我的发货信息</a>
 						<a href="{% url 'member' %}" class="type-title"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>个人中心</a>
 						<a href="#" class="ml " >地址管理</a>
 						<a href="#" class="ml " >我的收藏</a>

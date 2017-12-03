@@ -3,7 +3,7 @@
 {% load static from staticfiles %}
 {% block mainbody %}
 
-  
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,8 +20,8 @@
 	<script src="{% static 'myweb/js/jquery-1.12.4.min.js' %}"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script src="{% static 'myweb/js/bootstrap.min.js' %}"></script>
-	
-	
+
+
 
 
 	<!-- 兼任ie9以下 -->
@@ -32,14 +32,14 @@
 	<!-- 自定义 -->
 	<link rel="stylesheet" type="text/css" href="{% static 'myweb/css/global.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'myweb/css/app.css' %}">
-	
+
 	<link rel="stylesheet" type="text/css" href="{% static 'myweb/css/order.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'myweb/css/order-app.css' %}">
-	
+
 	<script type="text/javascript" src="{% static 'myweb/js/rem.js' %}"></script>
 	<script type="text/javascript" src="{% static 'myweb/js/topNav.js' %}"></script>
 </head>
-  
+
 <body class="member-app" >
     <!-- 主内容区域 -->
     <div class="mainbody order">
@@ -51,16 +51,16 @@
 					<li class="active"><a href="#">我的商城</a></li>
 				</ol>
 			</div><!-- 面包屑导航 E-->
-			
+
 			<div class="main clearfix">
 				<!-- 左侧导航 -->
 				<div class="left-nav f-fl hidden-xs hidden-sm">
 					<div class="nav-main">
-						<a href="{% url 'myorder' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
-						<a href="{% url 'myorder' %}" class="ml active" >我的订单</a>
+					    <a href="{% url 'myorder' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
+						<a href="{% url 'myorder' %}" class="ml" >我的订单</a>
 						<a href="{% url 'store' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>个人库房</a>
 						<a href="{% url 'store' %}" class="ml" >我的库存</a>
-						<a href="#" class="ml " >我的发货信息</a>
+						<a href="{% url 'store_order' %}" class="ml " >我的发货信息</a>
 						<a href="{% url 'member' %}" class="type-title"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>个人中心</a>
 						<a href="#" class="ml " >地址管理</a>
 						<a href="#" class="ml " >我的收藏</a>
@@ -72,11 +72,7 @@
 				<div class="right-content f-fr col-md-8 col-xs-12 col-sm-12">
 					<div class="order-main">
 						<div class="type-tab-btn" style="margin-top:-20px;">
-							<a href="javascript:;" class="allOrder active col-20" data-type="-1">全部订单</a><i class="line hidden-xs hidden-sm">|</i>
-							<a class="waitPay col-20" href="javascript:;" data-type="0">待付款<span class="amount _actAmount"></span></a><i class="line hidden-xs hidden-sm">|</i>
-							<a class="waitDeliver col-20" href="javascript:;" data-type="1">待发货</a><i class="line hidden-xs hidden-sm">|</i>
-							<a class="hasDeliver col-20" href="javascript:;" data-type="2">已发货</a><i class="line hidden-xs hidden-sm">|</i>
-							<a class="other col-20" href="javascript:;" data-type="99">其他</a>
+							<a href="javascript:;" class="allOrder active col-20" data-type="-1">发货清单</a><i class="line hidden-xs hidden-sm">|</i>
 						</div>
 						<div class="list-head hidden-xs hidden-sm">
                         <ul class="clearfix">
@@ -88,14 +84,15 @@
                                 订单明细
                             </li>
                             <li class="w125">售后</li>
-                            <li class="w125">金额</li>
+                            <li class="w125">成本价</li>
                             <li class="w125">状态</li>
                             <li class="w125">操作</li>
                         </ul>
 						</div>
+
 						<div id="tableList" class="type-contain ui-load-container">
 							<div class="ui-load-content"><input id="unPayNum" value="0" type="hidden">
-								{% for order in orders %}
+								{% for order in dispatch_order %}
                                 <table class="orderItem">
 									<tbody>
 										<tr class="trHead hidden-xs hidden-sm">
@@ -107,16 +104,16 @@
 										<tr class="list-box b-l b-r b-b" >
 											<td class="list b-r j-iamCart" >
 												<div class="cart-wrap j-CartWrap" >
-													{% for detail in order.detail_list %}
+
 													<div class="shop j-shop j-amLight"  >
-													
+
 														<div class="item b-t clearfix j-item j-iamMain">
                                                             <div class="productDetail nameWidth col-xs-8 col-sm-8" href="#" target="_blank">
 																<img src="/static/goods/s_{{ detail.picname }}" class="f-fl">
 
-																<div style="margin-top:10px;" >商品:{{detail.name}}</div>
-																<div style="margin-top:10px;" >价格:{{detail.price}}</div>
-																<div style="margin-top:10px;" >数量:{{detail.num}}</div>
+																<div style="margin-top:10px;" >商品:{{order.name}}</div>
+																<div style="margin-top:10px;" >价格:{{order.price}}</div>
+																<div style="margin-top:10px;" >数量:{{order.number}}</div>
 															</div>
 
 															<div class="describe f-fl col-xs-8 col-sm-8">
@@ -132,15 +129,15 @@
 															<input class="isCart" value="1" type="hidden">
 															<input class="orderSnSon" value="21090244361541575081" type="hidden">
 														</div>
-														
+
 													</div>
-													{% endfor %}
+
 												</div>
-												
+
 											</td>
 											<td class="b-r w125 center price b-t hidden-xs hidden-sm">
 												<div class="priceDiv">
-													￥ {{ order.total }}
+													总成本价：<br/>￥ {{ order.total }}
 
 												</div>
 											</td>
@@ -156,7 +153,7 @@
                                                         <form action="{% url 'qt_ztxg' order.id %}" method="post">
                                                             {% csrf_token %}
                                                             <input type="hidden" name="status" value="3"/>
-                                                            <button type="submit" class="btn btn-success">取消订单</button>
+                                                            <button type="submit" class="btn btn-success">催发订单</button>
                                                         </form>
                                                     {% endif %}
 
@@ -172,10 +169,10 @@
 					</div>
 				</div>
 			</div>
-		</div>	
-	</div>	
+		</div>
+	</div>
     <!-- 主内容区域 E-->
-	
+
 	<script type="text/javascript">//回顶部
       		backTop();
       		//全选

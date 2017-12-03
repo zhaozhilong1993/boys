@@ -25,11 +25,11 @@
 				<!-- 左侧导航 -->
 				<div class="left-nav f-fl hidden-xs hidden-sm">
 					<div class="nav-main">
-					<a href="{% url 'myorder' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
-						<a href="{% url 'myorder' %}" class="ml active" >我的订单</a>
+					    <a href="{% url 'myorder' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
+						<a href="{% url 'myorder' %}" class="ml" >我的订单</a>
 						<a href="{% url 'store' %}" class="type-title"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>个人库房</a>
 						<a href="{% url 'store' %}" class="ml" >我的库存</a>
-						<a href="#" class="ml " >我的发货信息</a>
+						<a href="{% url 'store_order' %}" class="ml " >我的发货信息</a>
 						<a href="javascript:;" class="type-title"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>个人中心</a>
 						<a href="#" class="ml " >地址管理</a>
 						<a href="#" class="ml " >我的收藏</a>
@@ -44,34 +44,49 @@
                         <hr>
                     </center>
 
-                    <form id="edit-profile" action="{% url 'orderxd' %}" class="form-horizontal col-md-6 col-md-offset-1" method="post">
+                    <form id="edit-profile" action="{% url 'store_xd' %}" class="form-horizontal col-md-6 col-md-offset-1" method="post">
                         {% csrf_token %}
 
                         <fieldset>
                             <div class="form-group">
                                  <label for="inputEmail3" class="col-sm-2 control-label">收件人</label>
                                  <div class="col-sm-10">
-                                   <input type="text" class="form-control" id="inputEmail3" readonly="" name="name" value="{{ request.session.order_username }}">
+                                   <input type="text" class="form-control" id="inputEmail3" name="linkman" >
+                                 </div>
+                            </div>
+                            <div class="form-group">
+                                 <label for="inputEmail3" class="col-sm-2 control-label">地址</label>
+                                 <div class="col-sm-10">
+                                   <input type="text" class="form-control" id="inputEmail3" name="address">
                                  </div>
                             </div>
                             <div class="form-group">
                                  <label for="inputEmail3" class="col-sm-2 control-label">电话</label>
                                  <div class="col-sm-10">
-                                   <input type="text" class="form-control" id="inputEmail3" readonly="" name="phone" value="{{ request.session.user_phone }}">
+                                   <input type="text" class="form-control" id="inputEmail3" name="phone" >
                                  </div>
                             </div>
                             <div class="form-group">
-                                 <label for="inputEmail3" class="col-sm-2 control-label">总金额</label>
+                                 <label for="inputEmail3" class="col-sm-2 control-label">邮政编码</label>
                                  <div class="col-sm-10">
-                                   <input type="text" class="form-control" id="inputEmail3" readonly="" value="{{ request.session.total }}">
+                                   <input type="text" class="form-control" id="inputEmail3" name="code" >
                                  </div>
                             </div>
-                            <input type="text" name="goods" value="{{ request.session.shoplist.values }}"  style="display:none;"/>
-
+                            <div class="form-group">
+                                 <label for="inputEmail3" class="col-sm-2 control-label">数量</label>
+                                 <div class="col-sm-10">
+                                   <input type="text" class="form-control" id="inputEmail3" readonly="" value="{{ request.session.store_send_number }}">
+                                 </div>
+                            </div>
+                            <div class="form-group">
+                                 <label for="inputEmail3" class="col-sm-2 control-label">商品入库价</label>
+                                 <div class="col-sm-10">
+                                   <input type="text" class="form-control" id="inputEmail3" readonly="" value="{{ request.session.store_good_price }}">
+                                 </div>
+                            </div>
                            <div class="form-group">
                                <div class="col-sm-offset-2 col-sm-10">
                                  <button type="submit" class="btn btn-primary">确认下单</button>
-                                 <a href="{% url 'cart' %}" class="btn  btn-success">返回购物车</a>
                                </div>
                             </div>
                         </fieldset>
@@ -104,7 +119,7 @@
         <div class="cart-merchant">
         <table class="cart-merchant-body">
         <tbody>
-        {% for shop in request.session.shoplist.values %}
+
             <tr class="cart-product" id="pro5">
                 <td class="cart-col-select col-md-3 col-xs-4 col-sm-4">
 
@@ -114,25 +129,25 @@
                 </td>
                 <td class="cart-col-name col-md-3 col-xs-8 col-sm-8">
                     <a href="" class="cart-product-link" target="_blank">
-                      <p>{{ shop.goods }}</p>
-                      <span class="cart-product-desc">{{ shop.descr }}</span>
+                      <p>{{ request.session.store_send_good_name }}</p>
+                      <span class="cart-product-desc">{{ request.session.store_send_good_desc }}</span>
                     </a>
                 </td>
                 <td class="cart-col-price col-md-2 hidden-xs hidden-sm">
                     <p>
-                        <span class="cart-product-price">{{ shop.price }}</span>
+                        <span class="cart-product-price">{{ request.session.store_good_price }}</span>
                     </p>
                 </td>
                 <td class="cart-col-price col-md-2 hidden-xs hidden-sm">
                     <p>
-                        <span>{{ shop.shop_num }}</span>
+                        <span>{{ request.session.store_send_number }}</span>
                     </p>
                 </td>
                 <td class="cart-col-total col-md-1 hidden-xs hidden-sm">
-                    <span class="cart-product-price total">{% widthratio  shop.price 1 shop.shop_num %}</span>
+                    <span class="cart-product-price total">{% widthratio  request.session.store_good_price 1 request.session.store_send_number %}</span>
                 </td>
             </tr>
-        {% endfor %}
+
         </tbody>
     </table>
     </div>
